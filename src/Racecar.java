@@ -15,23 +15,37 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
     protected double groundDrag;
     protected double velocity;
     protected double[] collisionVelocityVector;
-    protected double distanceTraveledSinceLastTireChange;
+    protected Tire tire;
 
-    public Racecar(int[] primaryColor, int[] secondaryColor, double facingAngleRad, double[] currentCoordinates, int[] dimensions){
-        this.primaryColour = new Color(primaryColor[0], primaryColor[1], primaryColor[2]);
-        this.secondaryColour = new Color(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
+    public Tire getTire() {
+        return tire;
+    }
+
+    public double getVehicleDrag() {
+        return vehicleDrag;
+    }
+
+    public double getVehicleTraction() {
+        return vehicleTraction;
+    }
+
+    public Racecar(Color primaryColor, Color secondaryColor, double facingAngleRad, double[] currentCoordinates, int[] dimensions, Tire tire, double vehicleDrag, double vehicleTraction, double enginePower, double mass){
+        this.primaryColour = primaryColor;
+        this.secondaryColour = secondaryColor;
         this.facingAngleRad = facingAngleRad;
         this.currentCoordinates = currentCoordinates;
         this.dimensions = dimensions;
 
         this.velocity = 0;
-        this.vehicleTraction = 0.1;
         this.groundTraction = 1;
-        this.mass = 1.5;
         this.collisionVelocityVector = new double[]{0,0};
-        this.vehicleDrag = 0.005;
         this.groundDrag = 0;
-        this.enginePower = 10;
+        this.mass = mass;
+        this.vehicleDrag = vehicleDrag;
+        this.enginePower = enginePower;
+        this.tire = tire;
+        this.vehicleTraction = vehicleTraction;
+
     }
     public Color getPrimaryColour() {
         return primaryColour;
@@ -75,7 +89,7 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         this.velocity = absoluteVelocity2;
         this.facingAngleRad = velocityAngle;
         this.currentCoordinates = physics.calculateCoordinates(currentCoordinates, summedVelocityVector3, dt);
-        this.distanceTraveledSinceLastTireChange += absoluteVelocity2*dt;
+        this.tire.update(absoluteVelocity2*dt);
     }
 
     @Override
