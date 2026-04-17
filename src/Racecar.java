@@ -9,8 +9,10 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
     // physics
     protected double mass;
     protected double enginePower;
-    protected double traction;
-    protected double drag;
+    protected double vehicleTraction;
+    protected double groundTraction;
+    protected double vehicleDrag;
+    protected double groundDrag;
     protected double velocity;
     protected double[] collisionVelocityVector;
 
@@ -22,10 +24,12 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         this.dimensions = dimensions;
 
         this.velocity = 0;
-        this.traction = 0.1;
+        this.vehicleTraction = 0.1;
+        this.groundTraction = 1;
         this.mass = 1.5;
         this.collisionVelocityVector = new double[]{0,0};
-        this.drag = 0.005;
+        this.vehicleDrag = 0.005;
+        this.groundDrag = 0;
         this.enginePower = 10;
     }
     public Color getPrimaryColour() {
@@ -52,7 +56,11 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         double[] previousVelocityVector = physics.convertVelocityToVector(velocity, facingAngleRad);
         this.enginePower = enginePower; // redundant assignment but this is where we would update enginePower if needed.
         double targetAngle = physics.calculateTargetAngle(currentCoordinates, targetPosition);
-        this.traction = traction; // update traction by ground at position
+        this.groundTraction = groundTraction; // update groundTraction here
+        this.groundDrag = groundDrag; // update groundDrag here
+        this.vehicleTraction = vehicleTraction; // update vehicleTraction here
+        double traction = this.groundTraction*this.vehicleTraction;
+        double drag = this.vehicleDrag+this.groundDrag;
         double[] engineForceVector = physics.calculateEngineForceVector(traction, enginePower, targetAngle);
         double[] accelerationVector = physics.calculateAcceleration(engineForceVector, mass);
         double[] velocityVector = physics.calculateVelocityFromAcceleration(accelerationVector, dt);
@@ -80,12 +88,12 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
 
     @Override
     public double getTraction() {
-        return traction;
+        return vehicleTraction*groundTraction;
     }
 
     @Override
     public double getDrag() {
-        return drag;
+        return vehicleDrag+groundDrag;
     }
 
     @Override
