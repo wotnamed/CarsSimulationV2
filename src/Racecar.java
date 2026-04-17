@@ -44,7 +44,7 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         this.vehicleDrag = vehicleDrag;
         this.enginePower = enginePower;
         this.tire = tire;
-        this.vehicleTraction = vehicleTraction;
+        this.vehicleTraction = tire.getTractionParameter();
 
     }
     public Color getPrimaryColour() {
@@ -73,7 +73,7 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         double targetAngle = physics.calculateTargetAngle(currentCoordinates, targetPosition);
         this.groundTraction = groundTraction; // update groundTraction here
         this.groundDrag = groundDrag; // update groundDrag here
-        this.vehicleTraction = vehicleTraction; // update vehicleTraction here
+        this.vehicleTraction = this.tire.getTractionParameter(); // update vehicleTraction here
         double traction = this.groundTraction*this.vehicleTraction;
         double drag = this.vehicleDrag+this.groundDrag;
         double[] engineForceVector = physics.calculateEngineForceVector(traction, enginePower, targetAngle);

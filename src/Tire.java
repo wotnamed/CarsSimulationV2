@@ -15,9 +15,12 @@ public class Tire {
         this.durability = 1;
     }
 
-    public void update(double distanceTraveled){
-        this.distanceTraveled+=distanceTraveled;
-        this.durability = 1-maximumDistance/distanceTraveled;
+    public void update(double addedDistance){
+        this.distanceTraveled = this.distanceTraveled + addedDistance;
+        this.durability = 1-1/(maximumDistance/distanceTraveled);
         this.tractionParameter = stockTractionParameter*(0.664385*Math.log10(durability+1)+0.8);
     }
+
+    public String getTireType(){return tireType;}
+    public double getTractionParameter(){return tractionParameter;}
 }

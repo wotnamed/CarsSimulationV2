@@ -39,7 +39,7 @@ public class CarGame extends JPanel implements ActionListener {
     private Timer timer;
 
     Physics physics = new Physics();
-    Racecar racecar = new Racecar(new Color(255, 185, 0), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(1, "Sigma", 9000), 0.2, 0.2, 1, 1);
+    Racecar racecar = new Racecar(new Color(255, 185, 0), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(1, "Sigma", 900000000), 0.2, 0.2, 1, 1);
     Checkpoint target = new Checkpoint(new double[]{200,200});
 
     public CarGame() {
