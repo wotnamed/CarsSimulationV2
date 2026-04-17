@@ -15,6 +15,7 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
     protected double groundDrag;
     protected double velocity;
     protected double[] collisionVelocityVector;
+    protected double distanceTraveledSinceLastTireChange;
 
     public Racecar(int[] primaryColor, int[] secondaryColor, double facingAngleRad, double[] currentCoordinates, int[] dimensions){
         this.primaryColour = new Color(primaryColor[0], primaryColor[1], primaryColor[2]);
@@ -74,6 +75,7 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         this.velocity = absoluteVelocity2;
         this.facingAngleRad = velocityAngle;
         this.currentCoordinates = physics.calculateCoordinates(currentCoordinates, summedVelocityVector3, dt);
+        this.distanceTraveledSinceLastTireChange += absoluteVelocity2*dt;
     }
 
     @Override
