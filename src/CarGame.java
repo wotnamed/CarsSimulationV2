@@ -113,11 +113,7 @@ public class CarGame extends JPanel implements ActionListener {
         }
 
         Color groundColor = getBackgroundColorAtCar();
-        if (groundColor.equals(new Color(30, 120, 30))) {
-            racecar.groundDrag = 0.05; // default value
-        } else {
-            racecar.groundDrag = 0.0; // off track
-        }
+        racecar.setGrounddrag(groundColor);
 
         racecar.updatePosition(physics, 2, target.getCoordinates());
         // 1. Apply Acceleration / Braking
