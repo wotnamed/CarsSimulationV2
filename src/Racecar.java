@@ -96,12 +96,27 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         this.consumeFuel(dt);
     }
 
-    public void setGrounddrag(Color groundColor) {
+    public void updateGroundParameters(Color groundColour, Map map){
+        int index = -1; // index in list or array cannot be negative
+        for (int i = 0; i < map.getGroundColourMap().length; i++){
+            if (map.getGroundColourMap()[i].equals(groundColour)){
+                index = i;
+            }
+        }
+        if (index != -1){
+            this.groundDrag = map.getGroundDragMap()[index];
+            this.groundTraction = map.getGroundTractionMap()[index];
+        } else {
+            System.out.println("ground not found!");
+        }
+    }
+    public void setGroundDrag(Color groundColor) {
         if (groundColor.equals(new Color(30, 120, 30))) {
             this.groundDrag = 0.05; }// offroad
         else {
             this.groundDrag = 0.0; }// track
     }
+
 
     public void consumeFuel(double dt){
         double fuelStart = this.fuel;

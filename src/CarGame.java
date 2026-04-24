@@ -45,19 +45,21 @@ public class CarGame extends JPanel implements ActionListener {
     Physics physics = new Physics();
     Racecar racecar = new Racecar(new Color(255, 185, 0), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 900000000), 0.001, 0.2, 10, 200);
     Checkpoint target = new Checkpoint(new double[]{200,200});
+    // create map
+    Color[] groundColourMap = new Color[]{new Color(85,85,85), new Color(30,120,30), new Color(70, 70, 70)};
+    double[] groundTractionMap = new double[]{0.99, 0.8, 0.99};
+    double[] groundDragMap = new double[]{0, 0.05, 0.5};
+    Checkpoint[] checkpointMap = new Checkpoint[]{};
+    int[] mainOval = new int[]{100, 100, 600, 400, 1, 200};
+    int[] pitArea = new int[]{250, 200, 300, 50, 2};
+    Map map = new Map(groundColourMap, groundDragMap, groundTractionMap, checkpointMap, mainOval, pitArea);
 
-    private void preRenderTrack(int w, int h) {
+    private void preRenderTrack(int w, int h, Map map) {
         image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = image.createGraphics();
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        Color[] groundColourMap = new Color[]{new Color(85,85,85), new Color(30,120,30), new Color(70, 70, 70)};
-        double[] groundTractionMap = new double[]{0.99, 0.8, 0.99};
-        double[] groundDragMap = new double[]{0, 0.05, 0.5};
-        Checkpoint[] checkpointMap = new Checkpoint[]{};
-        int[] mainOval = new int[]{100, 100, 600, 400, 1, 200};
-        int[] pitArea = new int[]{250, 200, 300, 50, 2};
-        Map map = new Map(groundColourMap, groundDragMap, groundTractionMap, checkpointMap, mainOval, pitArea);
+
         // Draw background
         g2d.setColor(map.getGroundColourMap()[1]);
         g2d.fillRect(0, 0, w, h);
@@ -78,7 +80,7 @@ public class CarGame extends JPanel implements ActionListener {
         setBackground(Color.DARK_GRAY);
         setFocusable(true);
         setPreferredSize(new Dimension(800, 600));
-        preRenderTrack(800, 600);
+        preRenderTrack(800, 600, map);
 
 
         // Add keyboard listener
@@ -123,7 +125,7 @@ public class CarGame extends JPanel implements ActionListener {
         }
 
         Color groundColor = getBackgroundColorAtCar();
-        racecar.setGrounddrag(groundColor);
+        racecar.updateGroundParameters(groundColor, map);
 
         racecar.updatePosition(physics, 2, target.getCoordinates());
         // 1. Apply Acceleration / Braking
