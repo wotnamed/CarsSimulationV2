@@ -9,6 +9,8 @@ public class TireChanger extends Vehicle{
         this.facingAngleRad = 0;
     }
     public Racecar changeTire(Racecar racecar, Tire tire){
-        return new Racecar(racecar.getPrimaryColour(), racecar.getSecondaryColour(), racecar.getFacingAngleRad(), racecar.getCurrentCoordinates(), racecar.getDimensions(), tire, racecar.getVehicleDrag(), racecar.getVehicleTraction(), racecar.getEnginePower(), racecar.getMass());
+        return new Racecar(racecar.getPrimaryColour(), racecar.getSecondaryColour(), racecar.getFacingAngleRad(),
+                racecar.getCurrentCoordinates(), racecar.getDimensions(), tire, racecar.getVehicleDrag(),
+                racecar.getVehicleTraction(), racecar.getEnginePower(), racecar.getMass());
     }
 }

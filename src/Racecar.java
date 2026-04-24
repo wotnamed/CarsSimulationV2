@@ -16,6 +16,8 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
     protected double velocity;
     protected double[] collisionVelocityVector;
     protected Tire tire;
+    // variables
+    protected double fuel;
 
     public Tire getTire() {
         return tire;
@@ -36,6 +38,7 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         this.currentCoordinates = currentCoordinates;
         this.dimensions = dimensions;
 
+        this.fuel = 1;
         this.velocity = 0;
         this.groundTraction = 1;
         this.collisionVelocityVector = new double[]{0,0};
@@ -90,19 +93,31 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         this.facingAngleRad = velocityAngle;
         this.currentCoordinates = physics.calculateCoordinates(currentCoordinates, summedVelocityVector3, dt);
         this.tire.update(absoluteVelocity2*dt);
+        this.consumeFuel(dt);
     }
 
     public void setGrounddrag(Color groundColor) {
         if (groundColor.equals(new Color(30, 120, 30))) {
-            this.groundDrag = 0.05; // default value
-        } else {
-            this.groundDrag = 0.0; // off track
-        }
+            this.groundDrag = 0.05; }// default value
+        else {
+            this.groundDrag = 0.0; }// off track
+    }
+
+    public void consumeFuel(double dt){
+        double fuelStart = this.fuel;
+        this.fuel = fuel - 0.00001*enginePower*velocity*dt;
+        if (this.fuel < 0) this.enginePower = 0;
+        setMass(fuelStart);
     }
 
     @Override
     public double getMass() {
         return mass;
+    }
+
+    public void setMass(double fuel) {
+        this.mass = mass + this.fuel - fuel;
+        System.out.println(this.mass);
     }
 
     @Override
