@@ -92,6 +92,14 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         this.tire.update(absoluteVelocity2*dt);
     }
 
+    public void setGrounddrag(Color groundColor) {
+        if (groundColor.equals(new Color(30, 120, 30))) {
+            this.groundDrag = 0.05; // default value
+        } else {
+            this.groundDrag = 0.0; // off track
+        }
+    }
+
     @Override
     public double getMass() {
         return mass;
