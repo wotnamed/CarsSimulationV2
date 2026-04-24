@@ -10,4 +10,7 @@ public class Tanker extends Vehicle{
         this.facingAngleRad = 0;
 
     }
+    public void refuel(Racecar racecar, double dt){
+                racecar.setFuel(1);
+    }
 }
