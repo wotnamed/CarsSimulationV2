@@ -51,14 +51,24 @@ public class CarGame extends JPanel implements ActionListener {
         Graphics2D g2d = image.createGraphics();
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
+        Color[] groundColourMap = new Color[]{new Color(85,85,85), new Color(30,120,30), new Color(70, 70, 70)};
+        double[] groundTractionMap = new double[]{0.99, 0.8, 0.99};
+        double[] groundDragMap = new double[]{0, 0.05, 0.5};
+        Checkpoint[] checkpointMap = new Checkpoint[]{};
+        int[] mainOval = new int[]{100, 100, 600, 400, 1, 200};
+        int[] pitArea = new int[]{250, 200, 300, 50, 2};
+        Map map = new Map(groundColourMap, groundDragMap, groundTractionMap, checkpointMap, mainOval, pitArea);
         // Draw background
-        g2d.setColor(new Color(30, 120, 30));
+        g2d.setColor(map.getGroundColourMap()[1]);
         g2d.fillRect(0, 0, w, h);
-        g2d.setColor(Color.GRAY);
-        g2d.fillOval(100, 100, 600, 400);
-        g2d.setColor(new Color(30, 120, 30));
-        g2d.fillOval(200, 200, 400, 200);
+        // Draw oval
+        g2d.setColor(map.getGroundColourMap()[0]);
+        g2d.fillOval(map.getMainOval()[0], map.getMainOval()[1], map.getMainOval()[2], map.getMainOval()[3]);
+        g2d.setColor(map.getGroundColourMap()[1]);
+        g2d.fillOval(map.getMainOval()[0]+map.getMainOval()[5]/2, map.getMainOval()[1]+map.getMainOval()[5]/2, map.getMainOval()[2]-map.getMainOval()[5], map.getMainOval()[3]-map.getMainOval()[5]);
+        // Draw pit
+        g2d.setColor(map.getGroundColourMap()[2]);
+        g2d.fillRect(map.getPitArea()[0], map.getPitArea()[1], map.getPitArea()[2], map.getPitArea()[3]);
 
         g2d.dispose();
     }
