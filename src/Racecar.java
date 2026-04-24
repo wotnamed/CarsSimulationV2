@@ -98,9 +98,9 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
 
     public void setGrounddrag(Color groundColor) {
         if (groundColor.equals(new Color(30, 120, 30))) {
-            this.groundDrag = 0.05; }// default value
+            this.groundDrag = 0.05; }// offroad
         else {
-            this.groundDrag = 0.0; }// off track
+            this.groundDrag = 0.0; }// track
     }
 
     public void consumeFuel(double dt){
@@ -118,6 +118,10 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
     public void setMass(double fuel) {
         this.mass = mass + this.fuel - fuel;
         System.out.println(this.mass);
+    }
+
+    public void setFuel(double fuel) {
+        this.fuel = fuel;
     }
 
     @Override
@@ -138,5 +142,9 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
     @Override
     public double getCurrentVelocity() {
         return velocity;
+    }
+
+    public double getFuel() {
+        return this.fuel;
     }
 }
