@@ -10,12 +10,7 @@ public class Tanker extends Vehicle{
         this.facingAngleRad = 0;
 
     }
-
     public void refuel(Racecar racecar, double dt){
-        Timer timer = new Timer(1000, e -> {
-            if (racecar.getFuel() < 1) {
                 racecar.setFuel(1);
-            }
-        }
     }
 }
