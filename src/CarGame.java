@@ -43,7 +43,7 @@ public class CarGame extends JPanel implements ActionListener {
     private BufferedImage image;
 
     Physics physics = new Physics();
-    Racecar racecar = new Racecar(new Color(255, 185, 0), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 900000000), 0.001, 0.2, 10, 200);
+    Racecar racecar = new Racecar(new Color(255, 185, 0), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 900), 0.001, 0.2, 10, 200);
     Checkpoint target = new Checkpoint(new double[]{200,200});
     // create map
     Color[] groundColourMap = new Color[]{new Color(85,85,85), new Color(30,120,30), new Color(70, 70, 70)};

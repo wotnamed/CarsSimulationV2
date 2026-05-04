@@ -94,6 +94,7 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         this.currentCoordinates = physics.calculateCoordinates(currentCoordinates, summedVelocityVector3, dt);
         this.tire.update(absoluteVelocity2*dt);
         this.consumeFuel(dt);
+        System.out.println(this.tire.getDurability());
     }
 
     public void updateGroundParameters(Color groundColour, Map map){
@@ -110,6 +111,7 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
             System.out.println("ground not found!");
         }
     }
+    // LEGACY CODE
     public void setGroundDrag(Color groundColor) {
         if (groundColor.equals(new Color(30, 120, 30))) {
             this.groundDrag = 0.05; }// offroad
@@ -132,7 +134,6 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
 
     public void setMass(double fuel) {
         this.mass = mass + this.fuel - fuel;
-        System.out.println(this.mass);
     }
 
     public void setFuel(double fuel) {
