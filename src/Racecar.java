@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.HashMap;
 
 public class Racecar extends Vehicle implements PhysicsBasedVehicle{
     protected double[] currentCoordinates;
@@ -18,6 +19,8 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
     protected Tire tire;
     // variables
     protected double fuel;
+
+    private HashMap<Color, double[]> groundCache;
 
     public Tire getTire() {
         return tire;
@@ -97,16 +100,26 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         System.out.println(this.tire.getDurability());
     }
 
-    public void updateGroundParameters(Color groundColour, Map map){
-        int index = -1; // index in list or array cannot be negative
-        for (int i = 0; i < map.getGroundColourMap().length; i++){
-            if (map.getGroundColourMap()[i].equals(groundColour)){
-                index = i;
+    public void updateGroundParameters(Color groundColour, Map map) {
+        //Lazy Initialization
+        if (groundCache == null) {
+            groundCache = new HashMap<>();
+            Color[] colors = map.getGroundColourMap();
+            double[] drags = map.getGroundDragMap();
+            double[] tractions = map.getGroundTractionMap();
+
+            // Populate the cache
+            for (int i = 0; i < colors.length; i++) {
+                groundCache.put(colors[i], new double[]{drags[i], tractions[i]});
             }
         }
-        if (index != -1){
-            this.groundDrag = map.getGroundDragMap()[index];
-            this.groundTraction = map.getGroundTractionMap()[index];
+
+        // Get color from map and update ground parameters
+        double[] groundData = groundCache.get(groundColour);
+
+        if (groundData != null) {
+            this.groundDrag = groundData[0];
+            this.groundTraction = groundData[1];
         } else {
             System.out.println("ground not found!");
         }

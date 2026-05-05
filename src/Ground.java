@@ -4,12 +4,6 @@ import java.awt.image.BufferedImage;
 
 public class Ground {
 
-
-
-
-
-
-
     public BufferedImage createImage(JPanel panel) {
         int w = panel.getWidth();
         int h = panel.getHeight();
