@@ -17,6 +17,10 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
     protected double velocity;
     protected double[] collisionVelocityVector;
     protected Tire tire;
+    protected boolean isPitStopping = false;
+    protected double pitStopTimeRemaining = 0.0;
+    protected Tire nextTire = null;
+    protected double maxFuel = 1.0;
     // variables
     protected double fuel;
     // target checkpoint index in map
@@ -109,7 +113,25 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         this.currentCoordinates = physics.calculateCoordinates(currentCoordinates, summedVelocityVector3, dt);
         this.tire.update(absoluteVelocity2*dt);
         this.consumeFuel(dt);
-        System.out.println(this.tire.getDurability());
+        //System.out.println(this.tire.getDurability());
+    }
+
+    public void updatePitStop(double dt) {
+        if (isPitStopping) {
+            pitStopTimeRemaining -= dt;
+            //System.out.println("Pit stop time remaining: " + pitStopTimeRemaining);
+
+            if (pitStopTimeRemaining <= 0) {
+                this.tire = nextTire;
+                this.nextTire = null;
+
+                double previousFuel = this.fuel;
+                this.fuel = this.maxFuel;
+                this.setMass(previousFuel);
+
+                this.isPitStopping = false;
+            }
+        }
     }
 
     public void updateGroundParameters(Color groundColour, Map map) {
@@ -133,7 +155,7 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
             this.groundDrag = groundData[0];
             this.groundTraction = groundData[1];
         } else {
-            System.out.println("ground not found!");
+            System.out.println("ground not found!"); // Happens when switching sometimes
         }
     }
     // LEGACY CODE
@@ -144,6 +166,20 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
             this.groundDrag = 0.0; }// track
     }
 
+    public void startPitStop(TireChanger tireChanger, Refueler refueler, Tire newTire) {
+        if (!isPitStopping) {
+            this.isPitStopping = true;
+            this.nextTire = newTire;
+
+            this.velocity = 0;
+            this.enginePower = 0;
+
+            double tireTime = tireChanger.calculateTireChangeTime();
+            double refuelTime = refueler.calculateRefuelTime(this.fuel, this.maxFuel);
+
+            this.pitStopTimeRemaining = Math.max(tireTime, refuelTime);
+        }
+    }
 
     public void consumeFuel(double dt){
         double fuelStart = this.fuel;
@@ -187,5 +223,9 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
 
     public double getFuel() {
         return this.fuel;
+    }
+
+    public void setTire(Tire tire) {
+        this.tire = tire;
     }
 }
