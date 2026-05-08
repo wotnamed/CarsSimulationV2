@@ -166,21 +166,6 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
             this.groundDrag = 0.0; }// track
     }
 
-    public void startPitStop(TireChanger tireChanger, Refueler refueler, Tire newTire) {
-        if (!isPitStopping) {
-            this.isPitStopping = true;
-            this.nextTire = newTire;
-
-            this.velocity = 0;
-            this.enginePower = 0;
-
-            double tireTime = tireChanger.calculateTireChangeTime();
-            double refuelTime = refueler.calculateRefuelTime(this.fuel, this.maxFuel);
-
-            this.pitStopTimeRemaining = Math.max(tireTime, refuelTime);
-        }
-    }
-
     public void consumeFuel(double dt){
         double fuelStart = this.fuel;
         this.fuel = fuel - 0.00001*enginePower*velocity*dt;
