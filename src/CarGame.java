@@ -43,13 +43,14 @@ public class CarGame extends JPanel implements ActionListener {
     private BufferedImage image;
 
     Physics physics = new Physics();
-    Racecar racecar = new Racecar(new Color(255, 185, 0), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 900), 0.001, 0.2, 10, 200);
+    Racecar racecar = new Racecar(new Color(255, 185, 0), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 9000), 0.05, 0.7, 10, 200);
     Checkpoint target = new Checkpoint(new double[]{200,200});
     // create map
     Color[] groundColourMap = new Color[]{new Color(85,85,85), new Color(30,120,30), new Color(70, 70, 70)};
     double[] groundTractionMap = new double[]{0.99, 0.8, 0.99};
     double[] groundDragMap = new double[]{0, 0.05, 0.5};
-    Checkpoint[] checkpointMap = new Checkpoint[]{};
+    Checkpoint[] checkpointMap = new Checkpoint[]{new Checkpoint(new double[]{400,150}), new Checkpoint(new double[]{200,200}), new Checkpoint(new double[]{150,300}), new Checkpoint(new double[]{200,400}), new Checkpoint(new double[]{400,450}), new Checkpoint(new double[]{600,400}), new Checkpoint(new double[]{650,300}), new Checkpoint(new double[]{600,200})};
+
     int[] mainOval = new int[]{100, 100, 600, 400, 1, 200};
     int[] pitArea = new int[]{250, 200, 300, 50, 2};
     Map map = new Map(groundColourMap, groundDragMap, groundTractionMap, checkpointMap, mainOval, pitArea);
@@ -126,8 +127,8 @@ public class CarGame extends JPanel implements ActionListener {
 
         Color groundColor = getBackgroundColorAtCar();
         racecar.updateGroundParameters(groundColor, map);
-
-        racecar.updatePosition(physics, 2, target.getCoordinates());
+        Targeting.updateTargetCheckpoint(racecar, checkpointMap, 50);
+        racecar.updatePosition(physics, 2, checkpointMap[racecar.getCheckpointIndex()].getCoordinates());
         // 1. Apply Acceleration / Braking
         if (upPressed) {
             speed += ACCELERATION;
@@ -208,6 +209,9 @@ public class CarGame extends JPanel implements ActionListener {
         g2d.setTransform(oldTransform);
         paintVehicle(g2d, racecar);
         paintCheckpoint(g2d, target);
+        for (int i = 0; i < map.checkpointMap.length; i++){
+            paintCheckpoint(g2d, map.checkpointMap[i]);
+        }
     }
     protected void paintVehicle(Graphics2D g2d, Vehicle vehicle){
         // works as of 20260416

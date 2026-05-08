@@ -22,7 +22,7 @@ public class Tire {
             this.tractionParameter = stockTractionParameter*(0.664385*Math.log10(durability+1)+0.8);
         } else if (durability == 0) {} else {
             durability = 0;
-            this.tractionParameter = 0.4;
+            this.tractionParameter = 0.2;
         }
     }
 
