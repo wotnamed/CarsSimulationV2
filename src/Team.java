@@ -46,14 +46,31 @@ public class Team {
     protected Color secondaryColor;
     protected String teamName;
     protected String teamMotto;
-    protected int rating;
+    protected int rating; // winrate for simplicity's sake
+    protected int[] raceStatistics;
 
-    public Team(Color primaryColour, Color secondaryColor, String teamName, String teamMotto, int rating){
+    public int getIdentifier() {
+        return identifier;
+    }
+
+    protected int identifier;
+
+    public int[] getRaceStatistics() {
+        return raceStatistics;
+    }
+
+    public void setRaceStatistics(int[] raceStatistics) {
+        this.raceStatistics = raceStatistics;
+    }
+
+    public Team(Color primaryColour, Color secondaryColor, String teamName, String teamMotto, int rating, int identifier, int[] raceStatistics){
         this.primaryColour = primaryColour;
         this.secondaryColor = secondaryColor;
         this.teamName = teamName;
         this.teamMotto = teamMotto;
         this.rating = rating;
+        this.identifier = identifier;
+        this.raceStatistics = raceStatistics; // won / lost
     }
 }
 

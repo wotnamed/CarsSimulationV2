@@ -25,6 +25,17 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
     protected double fuel;
     // target checkpoint index in map
     protected int checkpointIndex;
+    protected int lapCount;
+
+    public int getTeamIdentifier() {
+        return teamIdentifier;
+    }
+
+    public void setTeamIdentifier(int teamIdentifier) {
+        this.teamIdentifier = teamIdentifier;
+    }
+
+    protected int teamIdentifier;
 
     private HashMap<Color, double[]> groundCache;
 
@@ -48,7 +59,15 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         this.checkpointIndex = checkpointIndex;
     }
 
-    public Racecar(Color primaryColor, Color secondaryColor, double facingAngleRad, double[] currentCoordinates, int[] dimensions, Tire tire, double vehicleDrag, double vehicleTraction, double enginePower, double mass){
+    public int getLapCount() {
+        return lapCount;
+    }
+
+    public void setLapCount(int lapCount) {
+        this.lapCount = lapCount;
+    }
+
+    public Racecar(Color primaryColor, Color secondaryColor, double facingAngleRad, double[] currentCoordinates, int[] dimensions, Tire tire, double vehicleDrag, double vehicleTraction, double enginePower, double mass, int teamIdentifier){
         this.primaryColour = primaryColor;
         this.secondaryColour = secondaryColor;
         this.facingAngleRad = facingAngleRad;
@@ -67,6 +86,8 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         this.vehicleTraction = tire.getTractionParameter();
 
         this.checkpointIndex = 0;
+        this.lapCount = 0;
+        this.teamIdentifier = teamIdentifier;
 
     }
     public Color getPrimaryColour() {
