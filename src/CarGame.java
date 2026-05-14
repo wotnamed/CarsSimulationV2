@@ -8,28 +8,6 @@ import java.awt.image.BufferedImage;
 
 public class CarGame extends JPanel implements ActionListener {
 
-    // Car Physics Variables
-    private double x = 400;             // Initial X position
-    private double y = 300;             // Initial Y position
-    private double speed = 0;           // Current speed
-    private double angle = 0;           // Current heading (in radians)
-
-    // Tuning Constants
-    private final double ACCELERATION = 0.5;
-    private final double FRICTION = 0.96;     // Multiplier applied every frame (1.0 = no friction)
-    private final double MAX_SPEED = 16.0;
-    private final double MAX_REVERSE = -4.0;
-    private final double TURN_SPEED = 0.07;   // Radians per frame
-
-    // Car Dimensions
-    private final int CAR_LENGTH = 40;
-    private final int CAR_WIDTH = 20;
-
-    // Input States
-    private boolean upPressed = false;
-    private boolean downPressed = false;
-    private boolean leftPressed = false;
-    private boolean rightPressed = false;
 
     private boolean upPressed2 = false;
     private boolean downPressed2 = false;
@@ -104,10 +82,7 @@ public class CarGame extends JPanel implements ActionListener {
     }
 
     private void handleKeys(int keyCode, boolean pressed) {
-        if (keyCode == KeyEvent.VK_UP) upPressed = pressed;
-        if (keyCode == KeyEvent.VK_DOWN) downPressed = pressed;
-        if (keyCode == KeyEvent.VK_LEFT) leftPressed = pressed;
-        if (keyCode == KeyEvent.VK_RIGHT) rightPressed = pressed;
+
         if (keyCode == KeyEvent.VK_W) upPressed2 = pressed;
         if (keyCode == KeyEvent.VK_S) downPressed2 = pressed;
         if (keyCode == KeyEvent.VK_A) leftPressed2 = pressed;
@@ -133,43 +108,6 @@ public class CarGame extends JPanel implements ActionListener {
         // TODO: FIX THE WIN CONDITION CHECK MAYBE WITH THE JUDGE SUBSCRIBING TO A NOTIFIER FROM TARGETING CLASS????
         Racecar[] participantList = new Racecar[]{racecar};
         judge.checkWinCondition(participantList);
-        // 1. Apply Acceleration / Braking
-        if (upPressed) {
-            speed += ACCELERATION;
-        } else if (downPressed) {
-            speed -= ACCELERATION;
-        } else {
-            // Apply friction if no gas/brake is pressed
-            speed *= FRICTION;
-        }
-
-        // Limit speeds
-        if (speed > MAX_SPEED) speed = MAX_SPEED;
-        if (speed < MAX_REVERSE) speed = MAX_REVERSE;
-
-        // Stop completely if the speed is negligible (prevents infinite micro-sliding)
-        if (Math.abs(speed) < 0.1 && !upPressed && !downPressed) {
-            speed = 0;
-        }
-
-        // 2. Apply Steering (only if moving)
-        if (Math.abs(speed) > 0) {
-            // The direction of the turn flips if we are reversing
-            double direction = (speed > 0) ? 1 : -1;
-
-            if (leftPressed) angle -= TURN_SPEED * direction;
-            if (rightPressed) angle += TURN_SPEED * direction;
-        }
-
-        // 3. Update Position based on velocity vector
-        x += speed * Math.cos(angle);
-        y += speed * Math.sin(angle);
-
-        // Optional: Screen wrapping (so the car doesn't get lost off-screen)
-        if (x > getWidth()) x = 0;
-        if (x < 0) x = getWidth();
-        if (y > getHeight()) y = 0;
-        if (y < 0) y = getHeight();
     }
 
     @Override
@@ -192,25 +130,6 @@ public class CarGame extends JPanel implements ActionListener {
         // Enable anti-aliasing for smooth edges
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // Save the current transform state
-        var oldTransform = g2d.getTransform();
-
-        // Move the canvas to the car's coordinates, then rotate it
-        g2d.translate(x, y);
-        g2d.rotate(angle);
-
-        // Draw the car (centered on the translation point)
-        g2d.setColor(new Color(50, 150, 250)); // Light blue car
-
-        // Note: x represents length (forward direction), y represents width
-        g2d.fillRoundRect(-CAR_LENGTH / 2, -CAR_WIDTH / 2, CAR_LENGTH, CAR_WIDTH, 5, 5);
-
-        // Draw a "windshield" to indicate the front of the car
-        g2d.setColor(Color.WHITE);
-        g2d.fillRect((CAR_LENGTH / 2) - 10, (-CAR_WIDTH / 2) + 2, 6, CAR_WIDTH - 4);
-
-        // Restore the original transform state so other drawings aren't affected
-        g2d.setTransform(oldTransform);
         paintVehicle(g2d, racecar);
         paintVehicle(g2d, judge);
         paintCheckpoint(g2d, target);
