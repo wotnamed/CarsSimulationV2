@@ -136,7 +136,17 @@ public class CarGame extends JPanel implements ActionListener {
         for (int i = 0; i < map.checkpointMap.length; i++){
             paintCheckpoint(g2d, map.checkpointMap[i]);
         }
+        paintUI(g2d);
+
     }
+
+    protected void paintUI(Graphics g2d){
+        // UI testing
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("Arial", Font.BOLD, 11));
+        g2d.drawString("Lorem Ipsum", 40, 40);
+    }
+
     protected void paintVehicle(Graphics2D g2d, Vehicle vehicle){
         // works as of 20260416
         var oldTransform = g2d.getTransform();
