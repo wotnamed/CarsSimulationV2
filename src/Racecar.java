@@ -1,18 +1,10 @@
 import java.awt.*;
 import java.util.HashMap;
 
-public class Racecar extends Vehicle implements PhysicsBasedVehicle{
+public class Racecar extends PhysicsBasedVehicle{
 
     // physics
-    protected double mass;
-    protected double enginePower;
-    protected double vehicleTraction;
-    protected double groundTraction;
-    protected double vehicleDrag;
-    protected double groundDrag;
-    protected double velocity;
-    protected double[] collisionVelocityVector;
-    protected Tire tire;
+
     protected boolean isPitStopping = false;
     protected double pitStopTimeRemaining = 0.0;
     protected Tire nextTire = null;
@@ -23,28 +15,14 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
     protected int checkpointIndex;
     protected int lapCount;
 
+    protected int teamIdentifier;
+
     public int getTeamIdentifier() {
         return teamIdentifier;
     }
 
     public void setTeamIdentifier(int teamIdentifier) {
         this.teamIdentifier = teamIdentifier;
-    }
-
-    protected int teamIdentifier;
-
-    private HashMap<Color, double[]> groundCache;
-
-    public Tire getTire() {
-        return tire;
-    }
-
-    public double getVehicleDrag() {
-        return vehicleDrag;
-    }
-
-    public double getVehicleTraction() {
-        return vehicleTraction;
     }
 
     public int getCheckpointIndex() {
@@ -85,25 +63,6 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         this.lapCount = 0;
         this.teamIdentifier = teamIdentifier;
 
-    }
-    public Color getPrimaryColour() {
-        return primaryColour;
-    }
-
-    public double[] getCurrentCoordinates() {
-        return currentCoordinates;
-    }
-
-    public Color getSecondaryColour() {
-        return secondaryColour;
-    }
-
-    public double getFacingAngleRad() {
-        return facingAngleRad;
-    }
-
-    public int[] getDimensions() {
-        return dimensions;
     }
 
     public void updatePosition(Physics physics, double dt, double[] targetPosition){
@@ -151,38 +110,6 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         }
     }
 
-    public void updateGroundParameters(Color groundColour, Map map) {
-        //Lazy Initialization
-        if (groundCache == null) {
-            groundCache = new HashMap<>();
-            Color[] colors = map.getGroundColourMap();
-            double[] drags = map.getGroundDragMap();
-            double[] tractions = map.getGroundTractionMap();
-
-            // Populate the cache
-            for (int i = 0; i < colors.length; i++) {
-                groundCache.put(colors[i], new double[]{drags[i], tractions[i]});
-            }
-        }
-
-        // Get color from map and update ground parameters
-        double[] groundData = groundCache.get(groundColour);
-
-        if (groundData != null) {
-            this.groundDrag = groundData[0];
-            this.groundTraction = groundData[1];
-        } else {
-            System.out.println("ground not found!"); // Happens when switching sometimes
-        }
-    }
-    // LEGACY CODE
-    public void setGroundDrag(Color groundColor) {
-        if (groundColor.equals(new Color(30, 120, 30))) {
-            this.groundDrag = 0.05; }// offroad
-        else {
-            this.groundDrag = 0.0; }// track
-    }
-
     public void consumeFuel(double dt){
         double fuelStart = this.fuel;
         this.fuel = fuel - 0.00001*enginePower*velocity*dt;
@@ -191,10 +118,6 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
     }
 
     @Override
-    public double getMass() {
-        return mass;
-    }
-
     public void setMass(double fuel) {
         this.mass = mass + this.fuel - fuel;
     }
@@ -203,31 +126,7 @@ public class Racecar extends Vehicle implements PhysicsBasedVehicle{
         this.fuel = fuel;
     }
 
-    @Override
-    public double getEnginePower() {
-        return enginePower;
-    }
-
-    @Override
-    public double getTraction() {
-        return vehicleTraction*groundTraction;
-    }
-
-    @Override
-    public double getDrag() {
-        return vehicleDrag+groundDrag;
-    }
-
-    @Override
-    public double getCurrentVelocity() {
-        return velocity;
-    }
-
     public double getFuel() {
         return this.fuel;
-    }
-
-    public void setTire(Tire tire) {
-        this.tire = tire;
     }
 }

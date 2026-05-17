@@ -24,7 +24,7 @@ public class CarGame extends JPanel implements ActionListener {
     Racecar racecar = new Racecar(new Color(255, 185, 0), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 9000), 0.05, 0.7, 10, 200, 909);
     Checkpoint target = new Checkpoint(new double[]{200,200});
     Judge judge = new Judge(new Team[]{new Team(new Color(255,255,255), new Color(0,0,0),"beta", "git gud", 0, 909, new int[]{0,0})});
-    // createmap
+    // create map
     Color[] groundColourMap = new Color[]{new Color(85,85,85), new Color(30,120,30), new Color(70, 70, 70)};
     double[] groundTractionMap = new double[]{0.99, 0.8, 0.99};
     double[] groundDragMap = new double[]{0, 0.05, 0.5};
@@ -127,7 +127,7 @@ public class CarGame extends JPanel implements ActionListener {
         // Cast to Graphics2D for rotation and better rendering
         Graphics2D g2d = (Graphics2D) g;
 
-        // Enable anti-aliasing for smooth edges
+        // Enable antialiasing for smooth edges
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         paintVehicle(g2d, racecar);
