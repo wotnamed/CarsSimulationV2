@@ -2,6 +2,7 @@ import java.awt.*;
 import java.util.HashMap;
 
 public abstract class PhysicsBasedVehicle extends Vehicle{
+    // variables
     protected double mass;
     protected double enginePower;
     protected double vehicleTraction;
@@ -12,22 +13,37 @@ public abstract class PhysicsBasedVehicle extends Vehicle{
     protected double[] collisionVelocityVector;
     protected Tire tire;
     protected HashMap<Color, double[]> groundCache;
-
-
+    // getters
+    public double getVehicleDrag() {return vehicleDrag; }
+    public double getVehicleTraction() {
+        return vehicleTraction;
+    }
+    public Tire getTire() {
+        return tire;
+    }
+    public double getDrag() {
+        return vehicleDrag+groundDrag;
+    }
+    public double getTraction() {
+        return vehicleTraction*groundTraction;
+    }
+    public double getEnginePower() {
+        return enginePower;
+    }
+    public double getMass() {
+        return mass;
+    }
+    public double getCurrentVelocity() {
+        return velocity;
+    }
+    // setters
     public void setTire(Tire tire) {
         this.tire = tire;
-    }
-    // LEGACY CODE?
-    public void setGroundDrag(Color groundColor) {
-        if (groundColor.equals(new Color(30, 120, 30))) {
-            this.groundDrag = 0.05; }// offroad
-        else {
-            this.groundDrag = 0.0; }// track
     }
     public void setMass(double mass) {
         this.mass = mass;
     }
-
+    // other methods
     public void updateGroundParameters(Color groundColour, Map map) {
         //Lazy Initialization
         if (groundCache == null) {
@@ -52,29 +68,4 @@ public abstract class PhysicsBasedVehicle extends Vehicle{
             System.out.println("ground not found!"); // Happens when switching sometimes
         }
     }
-    public double getVehicleDrag() {
-        return vehicleDrag;
-    }
-    public double getVehicleTraction() {
-        return vehicleTraction;
-    }
-    public Tire getTire() {
-        return tire;
-    }
-    public double getDrag() {
-        return vehicleDrag+groundDrag;
-    }
-    public double getTraction() {
-        return vehicleTraction*groundTraction;
-    }
-    public double getEnginePower() {
-        return enginePower;
-    }
-    public double getMass() {
-        return mass;
-    }
-    public double getCurrentVelocity() {
-        return velocity;
-    }
-
 }

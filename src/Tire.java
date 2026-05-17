@@ -1,11 +1,16 @@
 public class Tire {
+    // variables
     protected double stockTractionParameter;
     protected double tractionParameter;
     protected String tireType;
     protected double distanceTraveled;
     protected double maximumDistance;
     protected double durability;
-
+    // getters
+    public String getTireType(){return tireType;}
+    public double getTractionParameter(){return tractionParameter;}
+    public double getDurability(){return durability;}
+    // init
     public Tire(double tractionParameter, String tireType, double maximumDistance){
         this.stockTractionParameter = tractionParameter;
         this.tractionParameter = stockTractionParameter;
@@ -14,7 +19,7 @@ public class Tire {
         this.distanceTraveled = 0;
         this.durability = 1;
     }
-
+    // logic
     public void update(double addedDistance){
         this.distanceTraveled = this.distanceTraveled + addedDistance;
         if (durability > 0){
@@ -25,8 +30,4 @@ public class Tire {
             this.tractionParameter = 0.2;
         }
     }
-
-    public String getTireType(){return tireType;}
-    public double getTractionParameter(){return tractionParameter;}
-    public double getDurability(){return durability;}
 }

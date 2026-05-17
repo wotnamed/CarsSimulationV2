@@ -2,45 +2,47 @@ import java.awt.*;
 import java.util.HashMap;
 
 public class Racecar extends PhysicsBasedVehicle{
-
-    // physics
-
+    // variables
     protected boolean isPitStopping = false;
     protected double pitStopTimeRemaining = 0.0;
     protected Tire nextTire = null;
     protected double maxFuel = 1.0;
-    // variables
     protected double fuel;
     // target checkpoint index in map
     protected int checkpointIndex;
     protected int lapCount;
-
     protected int teamIdentifier;
-
-    public int getTeamIdentifier() {
-        return teamIdentifier;
-    }
-
-    public void setTeamIdentifier(int teamIdentifier) {
-        this.teamIdentifier = teamIdentifier;
-    }
-
-    public int getCheckpointIndex() {
-        return checkpointIndex;
-    }
-
-    public void setCheckpointIndex(int checkpointIndex) {
-        this.checkpointIndex = checkpointIndex;
-    }
-
+    // getters
     public int getLapCount() {
         return lapCount;
     }
-
+    public int getCheckpointIndex() {
+        return checkpointIndex;
+    }
+    public int getTeamIdentifier() {
+        return teamIdentifier;
+    }
+    public double getFuel() {
+        return this.fuel;
+    }
+    // setters
+    @Override
+    public void setMass(double fuel) {
+        this.mass = mass + this.fuel - fuel;
+    }
+    public void setFuel(double fuel) {
+        this.fuel = fuel;
+    }
+    public void setTeamIdentifier(int teamIdentifier) {
+        this.teamIdentifier = teamIdentifier;
+    }
+    public void setCheckpointIndex(int checkpointIndex) {
+        this.checkpointIndex = checkpointIndex;
+    }
     public void setLapCount(int lapCount) {
         this.lapCount = lapCount;
     }
-
+    // init
     public Racecar(Color primaryColor, Color secondaryColor, double facingAngleRad, double[] currentCoordinates, int[] dimensions, Tire tire, double vehicleDrag, double vehicleTraction, double enginePower, double mass, int teamIdentifier){
         this.primaryColour = primaryColor;
         this.secondaryColour = secondaryColor;
@@ -64,7 +66,7 @@ public class Racecar extends PhysicsBasedVehicle{
         this.teamIdentifier = teamIdentifier;
 
     }
-
+    // logic
     public void updatePosition(Physics physics, double dt, double[] targetPosition){
         double[] previousVelocityVector = physics.convertVelocityToVector(velocity, facingAngleRad);
         this.enginePower = enginePower; // redundant assignment but this is where we would update enginePower if needed.
@@ -115,18 +117,5 @@ public class Racecar extends PhysicsBasedVehicle{
         this.fuel = fuel - 0.00001*enginePower*velocity*dt;
         if (this.fuel < 0) this.enginePower = 0;
         setMass(fuelStart);
-    }
-
-    @Override
-    public void setMass(double fuel) {
-        this.mass = mass + this.fuel - fuel;
-    }
-
-    public void setFuel(double fuel) {
-        this.fuel = fuel;
-    }
-
-    public double getFuel() {
-        return this.fuel;
     }
 }
