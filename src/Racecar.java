@@ -2,11 +2,7 @@ import java.awt.*;
 import java.util.HashMap;
 
 public class Racecar extends Vehicle implements PhysicsBasedVehicle{
-    protected double[] currentCoordinates;
-    protected Color primaryColour;
-    protected Color secondaryColour;
-    protected double facingAngleRad;
-    protected int[] dimensions;
+
     // physics
     protected double mass;
     protected double enginePower;

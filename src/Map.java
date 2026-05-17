@@ -5,6 +5,12 @@ public class Map {
     // Variables to map ground Colour to friction
     protected Color[] groundColourMap;
 
+    protected double[] groundDragMap;
+    protected double[] groundTractionMap;
+    protected Checkpoint[] checkpointMap;
+    protected int[] mainOval; // x, y, width, height, colourIndex, thickness,
+    protected int[] pitArea; // x, y, width, height, colourIndex
+
     public double[] getGroundDragMap() {
         return groundDragMap;
     }
@@ -33,11 +39,7 @@ public class Map {
         return pitArea;
     }
 
-    protected double[] groundDragMap;
-    protected double[] groundTractionMap;
-    protected Checkpoint[] checkpointMap;
-    protected int[] mainOval; // x, y, width, height, colourIndex, thickness,
-    protected int[] pitArea; // x, y, width, height, colourIndex
+
 
     public Map(Color[] groundColourMap, double[] groundDragMap, double[] groundTractionMap, Checkpoint[] checkpointMap, int[] mainOval, int[] pitArea){
         this.groundColourMap = groundColourMap;

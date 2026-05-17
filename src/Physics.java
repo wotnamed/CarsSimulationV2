@@ -29,8 +29,8 @@ public class Physics {
         return Math.sqrt(Math.pow(vector[0], 2)+Math.pow(vector[1], 2));
     }
 
-    public double[] calculateDragVector(double velocity, double dragcoefficient, double angle){
-        return new double[]{-dragcoefficient*Math.pow(velocity, 2)*Math.cos(angle), -dragcoefficient*Math.pow(velocity, 2)*Math.sin(angle)};
+    public double[] calculateDragVector(double velocity, double dragCoefficient, double angle){
+        return new double[]{-dragCoefficient*Math.pow(velocity, 2)*Math.cos(angle), -dragCoefficient*Math.pow(velocity, 2)*Math.sin(angle)};
     }
 
     public double[] calculateCoordinates(double[] currentCoordinates, double[] velocityVector, double dt){
