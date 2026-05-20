@@ -13,7 +13,7 @@ public class Pitstop {
     }
 
     public void PitStop(double dt, Racecar racecar, TireChanger tireChanger, Tanker tanker) {
-        while (racecar.isPitStopping) {
+        if (racecar.isPitStopping) {
             racecar.pitStopTimeRemaining -= dt;
 
             if (racecar.pitStopTimeRemaining <= 0) {

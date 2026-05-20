@@ -21,9 +21,20 @@ public class CarGame extends JPanel implements ActionListener {
     private BufferedImage image;
 
     Physics physics = new Physics();
-    Racecar racecar = new Racecar(new Color(255, 185, 0), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 9000), 0.05, 0.7, 10, 200, 909);
+    Racecar[] racecars = new Racecar[]{
+        new Racecar(new Color(0, 255, 4), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 9000), 0.05, 0.7, 10, 200, 909)
+        ,new Racecar(new Color(255, 0, 255), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 9000), 0.05, 0.7, 20, 200, 909)
+        ,new Racecar(new Color(255, 185, 0), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 9000), 0.05, 0.7, 15, 200, 909)
+    };
     Checkpoint target = new Checkpoint(new double[]{200,200});
+    // crew cars
     Judge judge = new Judge(new Team[]{new Team(new Color(255,255,255), new Color(0,0,0),"beta", "git gud", 0, 909, new int[]{0,0})});
+    // TODO: change crew to other system?
+    Pitstop[] pitstops;
+    Tanker[] tankers;
+    TireChanger[] tireChangers;
+    Checkpoint[] pitBoxes;
+    Teamleader[] teamleaders;
     // create map
     Color[] groundColourMap = new Color[]{new Color(85,85,85), new Color(30,120,30), new Color(70, 70, 70)};
     double[] groundTractionMap = new double[]{0.99, 0.8, 0.99};
@@ -55,13 +66,33 @@ public class CarGame extends JPanel implements ActionListener {
         g2d.dispose();
     }
 
+    private void initializePitCrews(int numberOfCars) {
+        pitstops = new Pitstop[numberOfCars];
+        tankers = new Tanker[numberOfCars];
+        tireChangers = new TireChanger[numberOfCars];
+        pitBoxes = new Checkpoint[numberOfCars];
+        teamleaders = new Teamleader[numberOfCars];
+
+        for(int i = 0; i < numberOfCars; i++) {
+            double pitX = 250 + (i * 30);
+            double pitY = 225;
+
+            pitstops[i] = new Pitstop();
+            tankers[i] = new Tanker(new double[]{pitX + 5, pitY + 10}, new int[]{255, 50, 50}, new int[]{200, 0, 0}, 0.5);
+            tireChangers[i] = new TireChanger(new double[]{pitX - 5, pitY - 10}, new int[]{50, 50, 255}, new int[]{0, 0, 200}, 1.5);
+            pitBoxes[i] = new Checkpoint(new double[]{pitX, pitY});
+
+            teamleaders[i] = new Teamleader(racecars[i], pitBoxes[i], tankers[i], tireChangers[i], pitstops[i]);
+        }
+    }
+
     public CarGame() {
         // Set up the panel
         setBackground(Color.DARK_GRAY);
         setFocusable(true);
         setPreferredSize(new Dimension(800, 600));
         preRenderTrack(800, 600, map);
-
+        initializePitCrews(racecars.length);
 
         // Add keyboard listener
         addKeyListener(new KeyAdapter() {
@@ -101,19 +132,34 @@ public class CarGame extends JPanel implements ActionListener {
             target.setCoordinates(new double[]{target.getCoordinates()[0]+10, target.getCoordinates()[1]});
         }
 
-        Color groundColor = getBackgroundColorAtCar();
-        racecar.updateGroundParameters(groundColor, map);
-        Targeting.updateTargetCheckpoint(racecar, checkpointMap, 50);
-        racecar.updatePosition(physics, 2, checkpointMap[racecar.getCheckpointIndex()].getCoordinates());
+        for (int i = 0; i < racecars.length; i++) {
+            Racecar car = racecars[i];
+            teamleaders[i].statusCheck();
+            if (car.isPitStopping) {
+                pitstops[i].PitStop(2, car, tireChangers[i], tankers[i]);
+            }
+            else {
+                Color groundColor = getBackgroundColorAtCar(car);
+                car.updateGroundParameters(groundColor, map);
+                Targeting.updateTargetCheckpoint(car, checkpointMap, 50);
+                car.updatePosition(physics, 2, checkpointMap[car.getCheckpointIndex()].getCoordinates());
+            }
+        }
         // TODO: FIX THE WIN CONDITION CHECK MAYBE WITH THE JUDGE SUBSCRIBING TO A NOTIFIER FROM TARGETING CLASS????
-        Racecar[] participantList = new Racecar[]{racecar};
-        judge.checkWinCondition(participantList);
+        judge.checkWinCondition(racecars);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         updatePhysics();
         repaint(); // Request a redraw
+    }
+
+    protected void paintUI(Graphics g2d){
+        // UI testing
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("Arial", Font.BOLD, 11));
+        g2d.drawString("Lorem Ipsum", 40, 40);
     }
 
     @Override
@@ -130,7 +176,14 @@ public class CarGame extends JPanel implements ActionListener {
         // Enable antialiasing for smooth edges
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        paintVehicle(g2d, racecar);
+        for (int i = 0; i < racecars.length; i++) {
+            paintVehicle(g2d, racecars[i]);
+        }
+        for (int i = 0; i < racecars.length; i++) {
+            paintVehicle(g2d, tankers[i]);
+            paintVehicle(g2d, tireChangers[i]);
+            paintCheckpoint(g2d, pitBoxes[i]);
+        }
         paintVehicle(g2d, judge);
         paintCheckpoint(g2d, target);
         for (int i = 0; i < map.checkpointMap.length; i++){
@@ -138,13 +191,6 @@ public class CarGame extends JPanel implements ActionListener {
         }
         paintUI(g2d);
 
-    }
-
-    protected void paintUI(Graphics g2d){
-        // UI testing
-        g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font("Arial", Font.BOLD, 11));
-        g2d.drawString("Lorem Ipsum", 40, 40);
     }
 
     protected void paintVehicle(Graphics2D g2d, Vehicle vehicle){
@@ -181,9 +227,9 @@ public class CarGame extends JPanel implements ActionListener {
         g2d.setTransform(oldTransform);
     }
 
-    private Color getBackgroundColorAtCar() {
+    private Color getBackgroundColorAtCar(Racecar car) {
         // Get the car's current coordinates
-        double[] coords = racecar.getCurrentCoordinates();
+        double[] coords = car.getCurrentCoordinates();
         int carX = (int) Math.round(coords[0]);
         int carY = (int) Math.round(coords[1]);
 

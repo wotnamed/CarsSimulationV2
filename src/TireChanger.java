@@ -15,6 +15,7 @@ public class TireChanger extends Vehicle {
 
     public void changeTire(Racecar racecar, Tire newTire) {
         racecar.setTire(newTire);
+        racecar.nextTire = null;
     }
 
     // Calculate stop time
