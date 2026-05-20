@@ -43,13 +43,14 @@ public class Racecar extends PhysicsBasedVehicle{
         this.lapCount = lapCount;
     }
     // init
-    public Racecar(Color primaryColor, Color secondaryColor, double facingAngleRad, double[] currentCoordinates, int[] dimensions, Tire tire, double vehicleDrag, double vehicleTraction, double enginePower, double mass, int teamIdentifier){
+    public Racecar(Color primaryColor, Color secondaryColor, double facingAngleRad, double[] currentCoordinates, int[] dimensions, Tire tire, double vehicleDrag, double vehicleTraction, double enginePower, double mass, int teamIdentifier, double maxFuel){
         this.primaryColour = primaryColor;
         this.secondaryColour = secondaryColor;
         this.facingAngleRad = facingAngleRad;
         this.currentCoordinates = currentCoordinates;
         this.dimensions = dimensions;
 
+        this.maxFuel = maxFuel;
         this.fuel = 1;
         this.velocity = 0;
         this.groundTraction = 1;
