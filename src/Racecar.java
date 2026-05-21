@@ -139,27 +139,8 @@ public class Racecar extends PhysicsBasedVehicle{
         this.currentCoordinates = physics.calculateCoordinates(currentCoordinates, summedVelocityVector3, dt);
         this.tire.update(absoluteVelocity2*dt);
         this.consumeFuel(dt);
-        if (this.fuel>0.1) {this.justFinishedPitStop = false;}
+        //if (this.fuel>0.1) {this.justFinishedPitStop = false;}
         //System.out.println(this.tire.getDurability());
-    }
-
-    public void updatePitStop(double dt) {
-        if (isPitStopping) {
-            pitStopTimeRemaining -= dt;
-            //System.out.println("Pit stop time remaining: " + pitStopTimeRemaining);
-
-            if (pitStopTimeRemaining <= 0) {
-                this.tire = nextTire;
-                this.nextTire = null;
-
-                double previousFuel = this.fuel;
-                this.fuel = this.maxFuel;
-                this.setMass(previousFuel);
-
-                this.isPitStopping = false;
-                notifyObservers(RaceEvent.PIT_STOP_COMPLETED);
-            }
-        }
     }
 
     public void consumeFuel(double dt){

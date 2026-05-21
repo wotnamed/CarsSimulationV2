@@ -3,6 +3,8 @@ public class Targeting {
         // takes vehicle and checkpoint map
         if (racecar.justFinishedPitStop){
             racecar.setCheckpointIndex(1);
+            racecar.justFinishedPitStop = false;
+            racecar.wantsToPit = false;
         } else {
             double[] currentCheckpointCoordinates = checkpointMap[racecar.getCheckpointIndex()].getCoordinates();
             double[] currentVehicleCoordinates = racecar.getCurrentCoordinates();

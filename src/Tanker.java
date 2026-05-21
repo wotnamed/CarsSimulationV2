@@ -18,9 +18,7 @@ public class Tanker extends Vehicle {
     }
 
     public void refuel(Racecar racecar) {
-        double oldFuel = racecar.fuel;
         racecar.setFuel(racecar.getMaxFuel());
-        racecar.setMass(oldFuel);
     }
 
     public double getFuelPerSecond() {

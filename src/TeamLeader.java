@@ -27,7 +27,7 @@ public class TeamLeader implements RaceObserver {
             double[] vehicleCoordinates = racecar.getCurrentCoordinates();
             double distance = Math.sqrt(Math.pow(checkpointCoordinates[0] - vehicleCoordinates[0], 2) + Math.pow(checkpointCoordinates[1] - vehicleCoordinates[1], 2));
 
-            if (distance < 10) {
+            if (distance < 10 && racecar.getWantsToPit()) {
                 this.newTire = new Tire(0.8, "Sigma-New", 9000);
                 if (!racecar.isPitStopping && !racecar.justFinishedPitStop){
                     pitstop.startPitStop(tireChanger, tanker, newTire, racecar);

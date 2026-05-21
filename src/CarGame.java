@@ -145,6 +145,7 @@ public class CarGame extends JPanel implements ActionListener {
             Racecar car = racecars[i];
 
             if (car.isPitStopping) {
+                // If the car is already stopped, let the pit crew work
                 pitstops[i].PitStop(2, racecars[i], tireChangers[i], tankers[i]);
             }
             else {
@@ -152,14 +153,31 @@ public class CarGame extends JPanel implements ActionListener {
                 car.updateGroundParameters(groundColor, map);
 
                 double[] targetCoordinates;
+
                 if (((car.getFuel() < 0.6 * car.getMaxFuel()) || car.getTire().getDurability() < 0.6) && (car.getCheckpointIndex() == 0)) {
                     targetCoordinates = pitBoxes[i].getCoordinates();
+
+                    double[] currentCoords = car.getCurrentCoordinates();
+                    double[] distanceVector = new double[]{
+                            targetCoordinates[0] - currentCoords[0],
+                            targetCoordinates[1] - currentCoords[1]
+                    };
+
+                    if (physics.calculateHypotenuse(distanceVector) <= 15.0) {
+                        car.isPitStopping = true;
+                        car.nextTire = new Tire(0.8, "Sigma", 9000);
+                        car.getCurrentCoordinates()[0] = targetCoordinates[0];
+                        car.getCurrentCoordinates()[1] = targetCoordinates[1];
+                    }
                 }
                 else {
                     Targeting.updateTargetCheckpoint(car, checkpointMap, 50);
                     targetCoordinates = checkpointMap[car.getCheckpointIndex()].getCoordinates();
                 }
-                car.updatePosition(physics, 2, targetCoordinates);
+
+                if (!car.isPitStopping) {
+                    car.updatePosition(physics, 2, targetCoordinates);
+                }
             }
         }
         // TODO: FIX THE WIN CONDITION CHECK MAYBE WITH THE JUDGE SUBSCRIBING TO A NOTIFIER FROM TARGETING CLASS????
