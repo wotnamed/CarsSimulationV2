@@ -1,7 +1,7 @@
 import java.awt.*;
 
 // keep track of laps of racecars, call start of race and end of race, feed race results into team statistics (external system)
-public class Judge extends Vehicle {
+public class Judge extends Vehicle implements RaceObserver {
     public Team[] getTeamList() {
         return teamList;
     }
@@ -29,17 +29,24 @@ public class Judge extends Vehicle {
         this.facingAngleRad = 1;
         this.dimensions = new int[]{40,40};
         this.teamList = new Team[]{};
+        this.raceRunning = true;
     }
     public static Judge getJudge(){
         if (INSTANCE == null){
             INSTANCE = new Judge();
         } return  INSTANCE;
     }
-    public void checkWinCondition(Racecar[] participantList){
-        for (int i = 0; i < participantList.length; i++){
-            if (participantList[i].getLapCount() >= lapCount){
-                raceRunning = false;
-                int identifier = participantList[i].getTeamIdentifier();
+    @Override
+    public void onRaceEvent(Racecar racecar, RaceEvent event) {
+        // We only care if a lap was completed and the race is still running
+        if (event == RaceEvent.LAP_COMPLETED && raceRunning) {
+
+            // Check if THIS specific car has crossed the win threshold
+            if (racecar.getLapCount() >= this.lapCount) {
+                this.raceRunning = false; // Stop the race updates
+                int identifier = racecar.getTeamIdentifier();
+
+                System.out.println("Judge Alert: Race finished! Winner is Team " + identifier);
                 updateRaceStatistics(identifier);
                 updateWinRates();
             }

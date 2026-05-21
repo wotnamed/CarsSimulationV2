@@ -1,4 +1,4 @@
-public class TeamLeader {
+public class TeamLeader implements RaceObserver {
 
     private Racecar racecar;
     private Checkpoint checkpoint;
@@ -15,14 +15,23 @@ public class TeamLeader {
         this.pitstop = pitstop;
     }
 
-    public void statusCheck() {
-        double[] checkpointCoordinates = checkpoint.coordinates;
-        double[] vehicleCoordinates = racecar.getCurrentCoordinates();
-        double distance = Math.sqrt(Math.pow(checkpointCoordinates[0] - vehicleCoordinates[0], 2) + Math.pow(checkpointCoordinates[1] - vehicleCoordinates[1], 2));
-        if (distance < 10) {
-            this.newTire = new Tire(0.8, "Sigma-New", 9000);
-            if (!racecar.isPitStopping && !racecar.justFinishedPitStop){
-                pitstop.startPitStop(tireChanger, tanker, newTire, racecar);
+    // Inside TeamLeader.java
+    @Override
+    public void onRaceEvent(Racecar racecar, RaceEvent event) {
+        if (event == RaceEvent.POSITION_UPDATED) {
+            if (racecar.getFuel() < 0.6 * racecar.getMaxFuel() || racecar.getTire().getDurability() < 0.6) {
+                racecar.setWantsToPit(true);
+            }
+
+            double[] checkpointCoordinates = checkpoint.getCoordinates();
+            double[] vehicleCoordinates = racecar.getCurrentCoordinates();
+            double distance = Math.sqrt(Math.pow(checkpointCoordinates[0] - vehicleCoordinates[0], 2) + Math.pow(checkpointCoordinates[1] - vehicleCoordinates[1], 2));
+
+            if (distance < 10) {
+                this.newTire = new Tire(0.8, "Sigma-New", 9000);
+                if (!racecar.isPitStopping && !racecar.justFinishedPitStop){
+                    pitstop.startPitStop(tireChanger, tanker, newTire, racecar);
+                }
             }
         }
     }

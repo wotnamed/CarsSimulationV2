@@ -85,6 +85,7 @@ public class CarGame extends JPanel implements ActionListener {
             pitBoxes[i] = new Checkpoint(new double[]{pitX, pitY});
 
             teamleaders[i] = new TeamLeader(racecars[i], pitBoxes[i], tankers[i], tireChangers[i], pitstops[i]);
+            racecars[i].addObserver(teamleaders[i]);
         }
     }
 
@@ -97,6 +98,10 @@ public class CarGame extends JPanel implements ActionListener {
         initializePitCrews(racecars.length);
         judge.setTeamList(teamList);
         judge.setLapCount(10);
+
+        for (Racecar car : racecars) {
+            car.addObserver(judge);
+        }
 
         // Add keyboard listener
         addKeyListener(new KeyAdapter() {
@@ -138,7 +143,7 @@ public class CarGame extends JPanel implements ActionListener {
 
         for (int i = 0; i < racecars.length; i++) {
             Racecar car = racecars[i];
-            teamleaders[i].statusCheck();
+
             if (car.isPitStopping) {
                 pitstops[i].PitStop(2, racecars[i], tireChangers[i], tankers[i]);
             }
@@ -147,7 +152,7 @@ public class CarGame extends JPanel implements ActionListener {
                 car.updateGroundParameters(groundColor, map);
 
                 double[] targetCoordinates;
-                if (((car.getFuel() < 0.6*car.getMaxFuel()) || car.getTire().getDurability() < 0.6) && (car.getCheckpointIndex() == 0)) { // added condition for checkpointIndex to make sure that the Racecar is at the end of its lap.
+                if (((car.getFuel() < 0.6 * car.getMaxFuel()) || car.getTire().getDurability() < 0.6) && (car.getCheckpointIndex() == 0)) {
                     targetCoordinates = pitBoxes[i].getCoordinates();
                 }
                 else {
@@ -158,7 +163,7 @@ public class CarGame extends JPanel implements ActionListener {
             }
         }
         // TODO: FIX THE WIN CONDITION CHECK MAYBE WITH THE JUDGE SUBSCRIBING TO A NOTIFIER FROM TARGETING CLASS????
-        judge.checkWinCondition(racecars);
+        //judge.checkWinCondition(racecars);
     }
 
     @Override

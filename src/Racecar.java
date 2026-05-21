@@ -1,11 +1,16 @@
 import java.awt.*;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Racecar extends PhysicsBasedVehicle{
+    //observer
+    private final List<RaceObserver> observers = new ArrayList<>();
     // variables
     protected boolean isPitStopping = false;
     protected double pitStopTimeRemaining = 0.0;
     protected boolean justFinishedPitStop = false;
+    public boolean wantsToPit = false;
     protected Tire nextTire = null;
     protected double maxFuel = 1.0;
     protected double fuel;
@@ -14,6 +19,9 @@ public class Racecar extends PhysicsBasedVehicle{
     protected int lapCount;
     protected int teamIdentifier;
     // getters
+    public boolean getWantsToPit() {
+        return this.wantsToPit;
+    }
     public int getLapCount() {
         return lapCount;
     }
@@ -30,6 +38,22 @@ public class Racecar extends PhysicsBasedVehicle{
         return maxFuel;
     }
 
+    public void addObserver(RaceObserver observer) {
+        if (!observers.contains(observer)) {
+            observers.add(observer);
+        }
+    }
+
+    public void removeObserver(RaceObserver observer) {
+        observers.remove(observer);
+    }
+
+    protected void notifyObservers(RaceEvent event) {
+        for (RaceObserver observer : observers) {
+            observer.onRaceEvent(this, event);
+        }
+    }
+
     // setters
     @Override
     public void setMass(double fuel) {
@@ -43,12 +67,15 @@ public class Racecar extends PhysicsBasedVehicle{
     }
     public void setCheckpointIndex(int checkpointIndex) {
         this.checkpointIndex = checkpointIndex;
+        notifyObservers(RaceEvent.CHECKPOINT_PASSED);
     }
     public void setLapCount(int lapCount) {
         this.lapCount = lapCount;
+        notifyObservers(RaceEvent.LAP_COMPLETED);
     }
-
-
+    public void setWantsToPit(boolean wantsToPit) {
+        this.wantsToPit = wantsToPit;
+    }
 
     // init
     public Racecar(Color primaryColor, Color secondaryColor, double facingAngleRad, double[] currentCoordinates, int[] dimensions, Tire tire, double vehicleDrag, double vehicleTraction, double enginePower, double mass, int teamIdentifier, double maxFuel){
@@ -130,6 +157,7 @@ public class Racecar extends PhysicsBasedVehicle{
                 this.setMass(previousFuel);
 
                 this.isPitStopping = false;
+                notifyObservers(RaceEvent.PIT_STOP_COMPLETED);
             }
         }
     }
@@ -139,5 +167,9 @@ public class Racecar extends PhysicsBasedVehicle{
         this.fuel = fuel - 0.00001*velocity*dt;
         if (this.fuel < 0) this.enginePower = 0;
         setMass(fuelStart);
+
+        if (fuelStart >= 0.25 * maxFuel && this.fuel < 0.25 * maxFuel) {
+            notifyObservers(RaceEvent.LOW_FUEL);
+        }
     }
 }

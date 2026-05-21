@@ -14,7 +14,7 @@ public class Pitstop {
     public void PitStop(double dt, Racecar racecar, TireChanger tireChanger, Tanker tanker) {
         if (racecar.isPitStopping) {
             racecar.pitStopTimeRemaining -= dt;
-            System.out.println(racecar.pitStopTimeRemaining);;
+            System.out.println(racecar.pitStopTimeRemaining);
 
             if (racecar.pitStopTimeRemaining <= 0) {
                 tireChanger.changeTire(racecar, racecar.nextTire);

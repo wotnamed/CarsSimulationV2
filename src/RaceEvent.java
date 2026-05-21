@@ -1,0 +1,7 @@
+public enum RaceEvent {
+    CHECKPOINT_PASSED,
+    LAP_COMPLETED,
+    LOW_FUEL,
+    PIT_STOP_COMPLETED,
+    POSITION_UPDATED
+}
