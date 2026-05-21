@@ -28,8 +28,10 @@ public class CarGame extends JPanel implements ActionListener {
     };
     Checkpoint target = new Checkpoint(new double[]{200,200});
     // crew cars
-    Judge judge = new Judge(new Team[]{new Team(new Color(255,255,255), new Color(0,0,0),"beta", "git gud", 0, 909, new int[]{0,0})});
+    Team[] teamList = new Team[]{new Team(new Color(255,255,255), new Color(0,0,0),"beta", "git gud", 0, 909, new int[]{0,0})};
+    Judge judge = Judge.getJudge();
     // TODO: change crew to other system?
+
     Pitstop[] pitstops;
     Tanker[] tankers;
     TireChanger[] tireChangers;
@@ -93,6 +95,7 @@ public class CarGame extends JPanel implements ActionListener {
         setPreferredSize(new Dimension(800, 600));
         preRenderTrack(800, 600, map);
         initializePitCrews(racecars.length);
+        judge.setTeamList(teamList);
 
         // Add keyboard listener
         addKeyListener(new KeyAdapter() {
@@ -143,7 +146,7 @@ public class CarGame extends JPanel implements ActionListener {
                 car.updateGroundParameters(groundColor, map);
 
                 double[] targetCoordinates;
-                if ((car.getFuel() < 0.20) || car.getTire().getDurability() < 0.20) {
+                if (((car.getFuel() < 0.6) || car.getTire().getDurability() < 0.6) && (car.getCheckpointIndex() == 0)) { // added condition for checkpointIndex to make sure that the Racecar is at the end of its lap.
                     targetCoordinates = pitBoxes[i].getCoordinates();
                 }
                 else {

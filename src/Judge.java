@@ -9,20 +9,24 @@ public class Judge extends Vehicle {
     public void setTeamList(Team[] teamList) {
         this.teamList = teamList;
     }
-
+    private static Judge INSTANCE;
     protected Team[] teamList;
     protected int lapCount; // threshold for win condition
     protected boolean raceRunning;
 
-    public Judge(Team[] teamList){
+    private Judge(){
         this.primaryColour = new Color(15,15,15);
         this.secondaryColour = new Color(200,200,200);
         this.currentCoordinates = new double[]{100,100};
         this.facingAngleRad = 1;
         this.dimensions = new int[]{40,40};
-        this.teamList = teamList;
+        this.teamList = new Team[]{};
     }
-
+    public static Judge getJudge(){
+        if (INSTANCE == null){
+            INSTANCE = new Judge();
+        } return  INSTANCE;
+    }
     public void checkWinCondition(Racecar[] participantList){
         for (int i = 0; i < participantList.length; i++){
             if (participantList[i].getLapCount() >= lapCount){
