@@ -20,6 +20,7 @@ public class Pitstop {
                 tireChanger.changeTire(racecar, racecar.nextTire);
                 tanker.refuel(racecar);
                 racecar.isPitStopping = false;
+                racecar.justFinishedPitStop = true;
             }
         }
     }

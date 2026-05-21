@@ -22,9 +22,9 @@ public class CarGame extends JPanel implements ActionListener {
 
     Physics physics = new Physics();
     Racecar[] racecars = new Racecar[]{
-        new Racecar(new Color(0, 255, 4), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 9000), 0.05, 0.7, 50, 200, 909, 1.0)
-        ,new Racecar(new Color(255, 0, 255), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 9000), 0.05, 0.7, 100, 200, 909, 0.1)
-        ,new Racecar(new Color(255, 185, 0), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 9000), 0.05, 0.7, 150, 200, 909, 0.01)
+        new Racecar(new Color(0, 255, 4), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 9000), 0.05, 0.7, 50, 200, 909, 3.0)
+        ,new Racecar(new Color(255, 0, 255), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 9000), 0.05, 0.7, 100, 200, 909, 3)
+        ,new Racecar(new Color(255, 185, 0), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 9000), 0.05, 0.7, 150, 200, 909, 3)
     };
     Checkpoint target = new Checkpoint(new double[]{200,200});
     // crew cars
@@ -96,6 +96,7 @@ public class CarGame extends JPanel implements ActionListener {
         preRenderTrack(800, 600, map);
         initializePitCrews(racecars.length);
         judge.setTeamList(teamList);
+        judge.setLapCount(10);
 
         // Add keyboard listener
         addKeyListener(new KeyAdapter() {
@@ -146,7 +147,7 @@ public class CarGame extends JPanel implements ActionListener {
                 car.updateGroundParameters(groundColor, map);
 
                 double[] targetCoordinates;
-                if (((car.getFuel() < 0.6) || car.getTire().getDurability() < 0.6) && (car.getCheckpointIndex() == 0)) { // added condition for checkpointIndex to make sure that the Racecar is at the end of its lap.
+                if (((car.getFuel() < 0.6*car.getMaxFuel()) || car.getTire().getDurability() < 0.6) && (car.getCheckpointIndex() == 0)) { // added condition for checkpointIndex to make sure that the Racecar is at the end of its lap.
                     targetCoordinates = pitBoxes[i].getCoordinates();
                 }
                 else {
@@ -171,6 +172,11 @@ public class CarGame extends JPanel implements ActionListener {
         g2d.setColor(Color.WHITE);
         g2d.setFont(new Font("Arial", Font.BOLD, 11));
         g2d.drawString("Lorem Ipsum", 40, 40);
+        int maxLaps = judge.getLapCount();
+        for (int i = 0; i<racecars.length; i++){
+            String message = "Team:" + racecars[i].getTeamIdentifier() + ", Laps: " + racecars[i].getLapCount() + "/" + maxLaps;
+            g2d.drawString(message, 80, 40+i*20);
+        }
     }
 
     @Override

@@ -19,9 +19,9 @@ public class TeamLeader {
         double[] checkpointCoordinates = checkpoint.coordinates;
         double[] vehicleCoordinates = racecar.getCurrentCoordinates();
         double distance = Math.sqrt(Math.pow(checkpointCoordinates[0] - vehicleCoordinates[0], 2) + Math.pow(checkpointCoordinates[1] - vehicleCoordinates[1], 2));
-        if (distance < 25) {
+        if (distance < 10) {
             this.newTire = new Tire(0.8, "Sigma-New", 9000);
-            if (!racecar.isPitStopping && racecar.getFuel() != 1){
+            if (!racecar.isPitStopping && !racecar.justFinishedPitStop){
                 pitstop.startPitStop(tireChanger, tanker, newTire, racecar);
             }
         }

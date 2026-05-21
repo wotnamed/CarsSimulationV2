@@ -6,6 +6,14 @@ public class Judge extends Vehicle {
         return teamList;
     }
 
+    public int getLapCount() {
+        return lapCount;
+    }
+
+    public void setLapCount(int lapCount) {
+        this.lapCount = lapCount;
+    }
+
     public void setTeamList(Team[] teamList) {
         this.teamList = teamList;
     }

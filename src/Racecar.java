@@ -5,6 +5,7 @@ public class Racecar extends PhysicsBasedVehicle{
     // variables
     protected boolean isPitStopping = false;
     protected double pitStopTimeRemaining = 0.0;
+    protected boolean justFinishedPitStop = false;
     protected Tire nextTire = null;
     protected double maxFuel = 1.0;
     protected double fuel;
@@ -25,6 +26,10 @@ public class Racecar extends PhysicsBasedVehicle{
     public double getFuel() {
         return this.fuel;
     }
+    public double getMaxFuel() {
+        return maxFuel;
+    }
+
     // setters
     @Override
     public void setMass(double fuel) {
@@ -42,6 +47,9 @@ public class Racecar extends PhysicsBasedVehicle{
     public void setLapCount(int lapCount) {
         this.lapCount = lapCount;
     }
+
+
+
     // init
     public Racecar(Color primaryColor, Color secondaryColor, double facingAngleRad, double[] currentCoordinates, int[] dimensions, Tire tire, double vehicleDrag, double vehicleTraction, double enginePower, double mass, int teamIdentifier, double maxFuel){
         this.primaryColour = primaryColor;
@@ -51,7 +59,7 @@ public class Racecar extends PhysicsBasedVehicle{
         this.dimensions = dimensions;
 
         this.maxFuel = maxFuel;
-        this.fuel = 1;
+        this.fuel = maxFuel;
         this.velocity = 0;
         this.groundTraction = 1;
         this.collisionVelocityVector = new double[]{0,0};
@@ -88,13 +96,23 @@ public class Racecar extends PhysicsBasedVehicle{
         double absoluteVelocity = physics.calculateHypotenuse(summedVelocityVector2);
         double velocityAngle = physics.calculateAngleOfVector(summedVelocityVector2);
         double[] dragVector = physics.calculateDragVector(absoluteVelocity, drag, velocityAngle);
-        double[] summedVelocityVector3 = physics.sumVectors(summedVelocityVector2, dragVector);
+        // fix edge case where drag vector is larger than engine vector
+        double[] summedVelocityVector3;
+        if (physics.calculateHypotenuse(summedVelocityVector2) >= physics.calculateHypotenuse(dragVector)){ // normal conditions
+            summedVelocityVector3 = physics.sumVectors(summedVelocityVector2, dragVector);
+        } else { // when pitting at high speeds
+            summedVelocityVector3 = physics.sumVectors(summedVelocityVector2, dragVector);
+            summedVelocityVector3 = new double[]{-0.01*summedVelocityVector3[0], -0.01*summedVelocityVector3[1]}; // This is done to resolve a bug where the Racecar "bounces" in and out of the pit at the pit entrance.
+        }
+        // update velocityAngle again to visualize actual direction (could be removed)
+        velocityAngle = physics.calculateAngleOfVector(summedVelocityVector3);
         double absoluteVelocity2 = physics.calculateHypotenuse(summedVelocityVector3);
         this.velocity = absoluteVelocity2;
         this.facingAngleRad = velocityAngle;
         this.currentCoordinates = physics.calculateCoordinates(currentCoordinates, summedVelocityVector3, dt);
         this.tire.update(absoluteVelocity2*dt);
         this.consumeFuel(dt);
+        if (this.fuel>0.1) {this.justFinishedPitStop = false;}
         //System.out.println(this.tire.getDurability());
     }
 
@@ -118,7 +136,7 @@ public class Racecar extends PhysicsBasedVehicle{
 
     public void consumeFuel(double dt){
         double fuelStart = this.fuel;
-        this.fuel = fuel - 0.00001*enginePower*velocity*dt;
+        this.fuel = fuel - 0.00001*velocity*dt;
         if (this.fuel < 0) this.enginePower = 0;
         setMass(fuelStart);
     }
