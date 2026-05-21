@@ -70,14 +70,17 @@ public class Racecar extends PhysicsBasedVehicle{
     // logic
     public void updatePosition(Physics physics, double dt, double[] targetPosition){
         double[] previousVelocityVector = physics.convertVelocityToVector(velocity, facingAngleRad);
-        this.enginePower = enginePower; // redundant assignment but this is where we would update enginePower if needed.
+        double engineOutput = this.enginePower;
+        if (isPitStopping){
+            engineOutput = 0;
+        }
         double targetAngle = physics.calculateTargetAngle(currentCoordinates, targetPosition);
         this.groundTraction = groundTraction; // update groundTraction here
         this.groundDrag = groundDrag; // update groundDrag here
         this.vehicleTraction = this.tire.getTractionParameter(); // update vehicleTraction here
         double traction = this.groundTraction*this.vehicleTraction;
         double drag = this.vehicleDrag+this.groundDrag;
-        double[] engineForceVector = physics.calculateEngineForceVector(traction, enginePower, targetAngle);
+        double[] engineForceVector = physics.calculateEngineForceVector(traction, engineOutput, targetAngle);
         double[] accelerationVector = physics.calculateAcceleration(engineForceVector, mass);
         double[] velocityVector = physics.calculateVelocityFromAcceleration(accelerationVector, dt);
         double[] summedVelocityVector = physics.sumVectors(previousVelocityVector, velocityVector);

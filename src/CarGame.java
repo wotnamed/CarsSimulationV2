@@ -36,7 +36,7 @@ public class CarGame extends JPanel implements ActionListener {
     Tanker[] tankers;
     TireChanger[] tireChangers;
     Checkpoint[] pitBoxes;
-    Teamleader[] teamleaders;
+    TeamLeader[] teamleaders;
     // create map
     Color[] groundColourMap = new Color[]{new Color(85,85,85), new Color(30,120,30), new Color(70, 70, 70)};
     double[] groundTractionMap = new double[]{0.99, 0.8, 0.99};
@@ -73,7 +73,7 @@ public class CarGame extends JPanel implements ActionListener {
         tankers = new Tanker[numberOfCars];
         tireChangers = new TireChanger[numberOfCars];
         pitBoxes = new Checkpoint[numberOfCars];
-        teamleaders = new Teamleader[numberOfCars];
+        teamleaders = new TeamLeader[numberOfCars];
 
         for(int i = 0; i < numberOfCars; i++) {
             double pitX = 250 + (i * 30);
@@ -84,7 +84,7 @@ public class CarGame extends JPanel implements ActionListener {
             tireChangers[i] = new TireChanger(new double[]{pitX - 5, pitY - 10}, new int[]{50, 50, 255}, new int[]{0, 0, 200}, 1.5);
             pitBoxes[i] = new Checkpoint(new double[]{pitX, pitY});
 
-            teamleaders[i] = new Teamleader(racecars[i], pitBoxes[i], tankers[i], tireChangers[i], pitstops[i]);
+            teamleaders[i] = new TeamLeader(racecars[i], pitBoxes[i], tankers[i], tireChangers[i], pitstops[i]);
         }
     }
 
@@ -139,7 +139,7 @@ public class CarGame extends JPanel implements ActionListener {
             Racecar car = racecars[i];
             teamleaders[i].statusCheck();
             if (car.isPitStopping) {
-                pitstops[i].PitStop(2, car, tireChangers[i], tankers[i]);
+                pitstops[i].PitStop(2, racecars[i], tireChangers[i], tankers[i]);
             }
             else {
                 Color groundColor = getBackgroundColorAtCar(car);

@@ -5,7 +5,6 @@ public class Pitstop {
         racecar.nextTire = newTire;
 
         racecar.velocity = 0;
-        racecar.enginePower = 0;
 
         double tireTime = tireChanger.calculateTireChangeTime();
         double refuelTime = tanker.calculateRefuelTime(racecar.fuel, racecar.maxFuel);
@@ -15,6 +14,7 @@ public class Pitstop {
     public void PitStop(double dt, Racecar racecar, TireChanger tireChanger, Tanker tanker) {
         if (racecar.isPitStopping) {
             racecar.pitStopTimeRemaining -= dt;
+            System.out.println(racecar.pitStopTimeRemaining);;
 
             if (racecar.pitStopTimeRemaining <= 0) {
                 tireChanger.changeTire(racecar, racecar.nextTire);
