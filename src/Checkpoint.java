@@ -1,4 +1,4 @@
-public class Checkpoint {
+public class Checkpoint implements Locatable{
     protected double[] coordinates;
 
     public Checkpoint(double[] coordinates) {

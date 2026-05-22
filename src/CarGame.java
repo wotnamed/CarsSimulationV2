@@ -26,6 +26,7 @@ public class CarGame extends JPanel implements ActionListener {
         ,new Racecar(new Color(255, 0, 255), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 9000), 0.05, 0.7, 100, 200, 909, 3)
         ,new Racecar(new Color(255, 185, 0), new Color(255,255,200), 3.14, new double[]{400,200}, new int[]{50,20}, new Tire(0.8, "Sigma", 9000), 0.05, 0.7, 150, 200, 909, 3)
     };
+    SafetyCar safetyCar = new SafetyCar(new double[]{400, 300}, Color.YELLOW, Color.BLACK, 1.0);
     Checkpoint target = new Checkpoint(new double[]{200,200});
     // crew cars
     Team[] teamList = new Team[]{new Team(new Color(255,255,255), new Color(0,0,0),"beta", "git gud", 0, 909, new int[]{0,0})};
@@ -108,6 +109,13 @@ public class CarGame extends JPanel implements ActionListener {
             @Override
             public void keyPressed(KeyEvent e) {
                 handleKeys(e.getKeyCode(), true);
+                if (e.getKeyCode() == KeyEvent.VK_Y) {
+                    if (safetyCar.isDeployed()) {
+                        safetyCar.recall();
+                    } else {
+                        safetyCar.deploy();
+                    }
+                }
             }
 
             @Override
@@ -145,43 +153,36 @@ public class CarGame extends JPanel implements ActionListener {
             Racecar car = racecars[i];
 
             if (car.isPitStopping) {
-                // If the car is already stopped, let the pit crew work
                 pitstops[i].PitStop(2, racecars[i], tireChangers[i], tankers[i]);
-            }
-            else {
+            } else {
                 Color groundColor = getBackgroundColorAtCar(car);
                 car.updateGroundParameters(groundColor, map);
 
                 double[] targetCoordinates;
-
                 if (((car.getFuel() < 0.6 * car.getMaxFuel()) || car.getTire().getDurability() < 0.6) && (car.getCheckpointIndex() == 0)) {
                     targetCoordinates = pitBoxes[i].getCoordinates();
-
-                    double[] currentCoords = car.getCurrentCoordinates();
-                    double[] distanceVector = new double[]{
-                            targetCoordinates[0] - currentCoords[0],
-                            targetCoordinates[1] - currentCoords[1]
-                    };
-
-                    if (physics.calculateHypotenuse(distanceVector) <= 15.0) {
+                    double distanceToPit = physics.calculateDistance(car, pitBoxes[i]);
+                    if (distanceToPit <= 15.0) {
                         car.isPitStopping = true;
                         car.nextTire = new Tire(0.8, "Sigma", 9000);
                         car.getCurrentCoordinates()[0] = targetCoordinates[0];
                         car.getCurrentCoordinates()[1] = targetCoordinates[1];
                     }
-                }
-                else {
+                } else {
                     Targeting.updateTargetCheckpoint(car, checkpointMap, 50);
                     targetCoordinates = checkpointMap[car.getCheckpointIndex()].getCoordinates();
                 }
 
                 if (!car.isPitStopping) {
-                    car.updatePosition(physics, 2, targetCoordinates);
+                    double[] oldCoords = new double[]{car.getCurrentCoordinates()[0], car.getCurrentCoordinates()[1]};
+                    double dt = 2.0;
+                    car.updatePosition(physics, dt, targetCoordinates);
+                    if (safetyCar != null) {
+                        safetyCar.enforceSpeedLimit(car, oldCoords, dt);
+                    }
                 }
             }
         }
-        // TODO: FIX THE WIN CONDITION CHECK MAYBE WITH THE JUDGE SUBSCRIBING TO A NOTIFIER FROM TARGETING CLASS????
-        //judge.checkWinCondition(racecars);
     }
 
     @Override
@@ -231,6 +232,9 @@ public class CarGame extends JPanel implements ActionListener {
         }
         paintUI(g2d);
 
+        if (safetyCar != null && safetyCar.isDeployed()) {
+            paintVehicle(g2d, safetyCar);
+        }
     }
 
     protected void paintVehicle(Graphics2D g2d, Vehicle vehicle){

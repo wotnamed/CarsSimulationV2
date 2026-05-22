@@ -3,7 +3,11 @@ public class Physics {
         return new double[]{velocity*Math.cos(angle),velocity*Math.sin(angle)};
     }
     public double calculateTargetAngle(double[] origin, double[] destination){
-        return Math.atan2(destination[1]-origin[1], destination[0]-origin[0]);
+        return Math.atan2(destination[1] - origin[1], destination[0] - origin[0]);
+    }
+
+    public double calculateTargetAngle(Locatable origin, Locatable destination){
+        return calculateTargetAngle(origin.getCoordinates(), destination.getCoordinates());
     }
 
     public double calculateAngleOfVector(double[] vector){
@@ -37,4 +41,11 @@ public class Physics {
         return new double[]{currentCoordinates[0]+velocityVector[0]*dt, currentCoordinates[1]+velocityVector[1]*dt};
     }
 
+    public double calculateDistance(Locatable origin, Locatable destination) {
+        double[] o = origin.getCoordinates();
+        double[] d = destination.getCoordinates();
+        double dx = d[0] - o[0];
+        double dy = d[1] - o[1];
+        return Math.sqrt((dx * dx) + (dy * dy));
+    }
 }

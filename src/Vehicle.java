@@ -1,13 +1,14 @@
 import java.awt.*;
 
-public abstract class Vehicle {
+public abstract class Vehicle implements Locatable { // 1. Make sure 'implements Locatable' is here
     // variables needed to display any "Vehicle"
     protected double[] currentCoordinates;
     protected Color primaryColour;
     protected Color secondaryColour;
     protected double facingAngleRad;
     protected int[] dimensions;
-    // getters
+
+    // Existing getters
     public Color getPrimaryColour() {
         return primaryColour;
     }
@@ -24,4 +25,8 @@ public abstract class Vehicle {
         return dimensions;
     }
 
+    @Override
+    public double[] getCoordinates() {
+        return this.currentCoordinates;
+    }
 }

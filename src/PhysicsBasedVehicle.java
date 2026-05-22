@@ -68,4 +68,8 @@ public abstract class PhysicsBasedVehicle extends Vehicle{
             System.out.println("ground not found!"); // Happens when switching sometimes
         }
     }
+
+    public void setEnginePower(double enginePower) {
+        this.enginePower = enginePower;
+    }
 }
